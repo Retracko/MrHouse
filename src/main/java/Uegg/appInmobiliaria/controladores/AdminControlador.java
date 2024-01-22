@@ -42,31 +42,27 @@ public class AdminControlador {
 
         return "redirect:/admin/usuarios";
     }
-    
+
     @GetMapping("/darAlta/{id}")
     public String darAlta(@PathVariable String id) {
         usuarioServicio.alta(id);
         return "redirect:/admin/usuarios";
     }
-    
+
     @GetMapping("/darBaja/{id}")
-    public String darBaja(@PathVariable String id) {
+    public String darBaja(@PathVariable String id, ModelMap modelo) {
+
+        List<Inmueble> inmuebles = inmuebleRepositorio.buscarPorProp(id);
+        if (inmuebles != null) {
+            for (Inmueble inmueble : inmuebles) {
+                if (inmueble.getUsuarioInquilino() != null) {
+                    modelo.put("error", "Este usuario tiene propiedades vinculadas a otros usuarios");
+                    return "redirect:/admin/usuarios";
+                }
+            }
+        }
         usuarioServicio.baja(id);
         return "redirect:/admin/usuarios";
-    }
-
-    @GetMapping("/eliminar/{id}")
-    public String eliminarUsuario(@PathVariable String id) {
-
-        List<Inmueble> respuesta = inmuebleRepositorio.buscarPorEnte(id);
-        if (respuesta.isEmpty()) {
-            usuarioServicio.baja(id);
-            return "redirect:/admin/usuarios";
-        }else {
-            return "redirect:/inmueble/eliminar";
-        }
-
-        
     }
 
 }

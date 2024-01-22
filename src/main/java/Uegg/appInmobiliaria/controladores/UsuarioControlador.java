@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * @author Gimenez Victor
- */
 @Controller
 @RequestMapping("/usuario")
 public class UsuarioControlador {
@@ -120,9 +117,9 @@ public class UsuarioControlador {
     @PostMapping("/modificar/{id}")
     public String modificar(
             @PathVariable String id,
-            @RequestParam Long telefono,
+            @RequestParam(required = false) Long telefono,
             @RequestParam String direccion,
-            @RequestParam Integer codigoPostal,
+            @RequestParam(required = false) Integer codigoPostal,
             @RequestParam String email,
             @RequestParam String pass,
             @RequestParam String pass2,
@@ -140,11 +137,11 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/perfil/{id}")
-    public String perfil (@PathVariable String id, ModelMap modelo) {
+    public String perfil(@PathVariable String id, ModelMap modelo) {
         Usuario usuario = usuarioServicio.getOne(id);
-        
+
         modelo.addAttribute("usuario", usuario);
-        
+
         return "perfil.html";
     }
 }

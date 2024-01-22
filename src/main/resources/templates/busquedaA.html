@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
@@ -7,7 +6,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crear Inmueble</title>
+    <title>Busqueda</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -27,13 +26,11 @@
     <nav th:replace="./fragment/navbar :: nav"></nav>
 
     <div class="contenedor">
-      <form
-        class="formCrearInmueble fondo"
-        action="/inmueble/creado"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-          <div hidden> <input hidden th:value="${session.usuariosession.id} " name=" idUsuarioEnte"> </div>
+        <form  class="formCrearInmueble fondo" 
+        action="/inmueble/lista/busquedaAlquiler"
+        method="POST" >
+      
+         
         <div class="col-1-general"></div>
         <div class="col-2-general">
           <div class="form-row1">
@@ -47,28 +44,8 @@
                 ></option>
               </select>
             </div>
-            <div class="form-col2">
-              <label for="ubicacion" class="form-label">Ubicación:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="ubicacion"
-                name="ubicacion"
-                placeholder="Ingrese la ubicación"
-              />
-            </div>
           </div>
-          <div class="form-row2">
-            <div class="form-col1">
-              <label for="superficie" class="form-label">Superficie:</label>
-              <input
-                type="number"
-                class="form-control"
-                id="superficie"
-                name="superficie"
-                placeholder="Tamaño de la superficie"
-              />
-            </div>
+         
             <div class="form-col2">
               <label for="ambientes" class="form-label">Ambientes:</label>
               <input
@@ -79,68 +56,36 @@
                 placeholder="Cantidad de ambientes"
               />
             </div>
-          </div>
-          <div class="form-row3">
-            <div class="form-col1">
-              <label for="descripcion" class="form-label">Descripción:</label>
-              <textarea
+            
+              <div class="form-col2">
+              <label for="precio" class="form-label">Ingrese el Precio Mínimo:</label>
+              <input
+                type="number"
                 class="form-control"
-                id="descripcion"
-                name="descripcion"
-                placeholder="Ingrese la descripción"
-              ></textarea>
-            </div>
-          </div>
-          <div class="form-row4">
-            <div class="form-col1">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="tipoOferta"
-                  value="venta"
-                  id="venta"
-                />
-                <label class="form-check-label" for="venta">Venta</label>
+                id="precio"
+                name="precioM"
+                placeholder="Ingrese el precio"              
+              />
               </div>
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="tipoOferta"
-                  value="alquiler"
-                  id="alquiler"
-                />
-                <label class="form-check-label" for="alquiler">Alquiler</label>
-              </div>
-            </div>
+        
             <div class="form-col2">
-              <label for="precio" class="form-label">Precio:</label>
+              <label for="precio" class="form-label">Ingrese el Precio Máximo:</label>
               <input
                 type="number"
                 class="form-control"
                 id="precio"
                 name="precio"
-                placeholder="Ingrese el precio"
+                placeholder="Ingrese el precio"              
               />
+      
             </div>
-                <div class="form-col2">
-              <label for="archivos" class="form-label">Inserte las imagenes</label>
-              <input
-                type="file"
-                class="form-control"
-                id="archivos"
-                name="archivos"
-                multiple accept="image/*"
-              />
-            </div>
-          </div>
+            
           <div class="form-row5">
             <button type="submit" class="button-79" role="button">
-              Crear Inmueble
+              Buscar
             </button>
           </div>
-        </div>
+       
 
         <div class="form-row">
           <div th:if="${error != null}" class="form-mensajeError">
@@ -156,8 +101,11 @@
             </div>
           </div>
         </div>
-      </form>
+        </form>
     </div>
+  </body>
+   
+    
 
     <footer th:replace="./fragment/footer :: footer"></footer>
     <script
@@ -167,3 +115,5 @@
     ></script>
   </body>
 </html>
+
+

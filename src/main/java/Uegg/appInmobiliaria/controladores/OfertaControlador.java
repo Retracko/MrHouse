@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * @author Gimenez Victor
- */
 @Controller
 @RequestMapping("/oferta")
 public class OfertaControlador {
@@ -29,10 +26,8 @@ public class OfertaControlador {
     private OfertaServicio ofertaServicio;
     @Autowired
     private InmuebleServicio inmuebleServicio;
-    @Autowired
-    private OfertaRepositorio ofertaRepositorio;
 
-    @PreAuthorize("hasAnyRole('ROLE_CLIENTE')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENTE', 'ROLE_ENTE')")
     @GetMapping("/crear/{id}")
     public String hacerOferta(
             @PathVariable("id") String id,
@@ -49,22 +44,24 @@ public class OfertaControlador {
     @PostMapping("/enviar")
     public String enviarOferta(
             @RequestParam(required = false) Double montoOferta,
+            @RequestParam String tipoOferta,
             @RequestParam("idInmueble") String idInmueble,
             @RequestParam("idCliente") String idCliente,
             ModelMap modelo
     ) throws MyException {
 
         try {
-            ofertaServicio.crearOfertaCliente(montoOferta, idInmueble, idCliente);
+            ofertaServicio.crearOfertaCliente(montoOferta, tipoOferta, idInmueble, idCliente);
 
             modelo.put("exito", "Oferta enviada. Espere respuesta del Dueño de la propiedad");
-            return "redirect:/";
+            return "redirect:/inmueble/detalle/" + idInmueble;
         } catch (MyException ex) {
             modelo.put("error", ex.getMessage());
             modelo.put("montoOferta", montoOferta);
+            modelo.put("tipoOferta", tipoOferta);
             modelo.put("idInmueble", idInmueble);
             modelo.put("idCliente", idCliente);
-            return "oferta_form";
+            return "redirect:/inmueble/detalle/" + idInmueble;
         }
     }
 
@@ -89,7 +86,7 @@ public class OfertaControlador {
 
     @GetMapping("/rechazar/{id}")
     public String rechazarOferta(@PathVariable String id) {
-        Oferta oferta = (Oferta) ofertaServicio.getOne(id);
+        Oferta oferta = ofertaServicio.getOne(id);
         String inmueble = oferta.getInmueble().getId();
         ofertaServicio.rechazarOferta(id);
         return "redirect:/oferta/inmueble/" + inmueble;
@@ -114,12 +111,19 @@ public class OfertaControlador {
         return "redirect:/oferta/cliente/" + idUsuario;
     }
 
+    @GetMapping("/cancelar/{id}")
+    public String cancelar(@PathVariable String id) {
+        Oferta oferta = ofertaServicio.getOne(id);
+        String idUsuario = oferta.getUsuarioCliente().getId();
+        ofertaServicio.cancelarOferta(id);
+        return "redirect:/oferta/cliente/" + idUsuario;
+    }
+
     @GetMapping("/confirmar/{id}")
     public String confirmar(@PathVariable String id) {
         Oferta oferta = (Oferta) ofertaServicio.getOne(id);
         String idUsuario = oferta.getUsuarioCliente().getId();
         ofertaServicio.confirmarOferta(id);
-        ofertaServicio.transaccionCompra(id);
         return "redirect:/oferta/cliente/" + idUsuario;
     }
 

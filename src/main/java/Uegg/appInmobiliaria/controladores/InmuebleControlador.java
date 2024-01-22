@@ -7,9 +7,7 @@ import Uegg.appInmobiliaria.excepciones.MyException;
 import Uegg.appInmobiliaria.repositorios.InmuebleRepositorio;
 import Uegg.appInmobiliaria.servicios.ImagenServicio;
 import Uegg.appInmobiliaria.servicios.InmuebleServicio;
-import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -152,71 +150,106 @@ public class InmuebleControlador {
         return "inmuebleList.html";
     }
 
-    
-        @PreAuthorize("hasAnyRole('ROLE_ENTE')")
-    @GetMapping("/listar/{id}") 
-    public String listarGeneral(HttpSession session,ModelMap modelo,@PathVariable String id) {
+    @GetMapping("/detalle/{id}")
+    public String detalleInmueble(@PathVariable String id, ModelMap modelo, HttpSession session) {
+        Inmueble inmueble = inmuebleRepositorio.getOne(id);
 
-        List<Inmueble> inmuebles = inmuebleServicio.listarInmuebleEnte(id);
+        modelo.addAttribute("inmueble", inmueble);
+        modelo.addAttribute("session", session);
+
+        return "inmuebleDetalle.html";
+    }
+
+    @GetMapping("/lista/busquedaVenta") //localhost:8080/inmueble/lista/
+    public String listarbúsquedaVenta(ModelMap modelo) {
+
+        modelo.addAttribute("tipos", Tipo.values());
+
+        return "busqueda.html";
+    }
+
+    @PostMapping("/lista/busquedaVenta") //localhost:8080/inmueble/lista/
+    public String búsquedaVenta(@RequestParam Tipo tipo, @RequestParam(required = false) Double superficie,
+            @RequestParam(required = false) Integer ambientes, @RequestParam(required = false) Double precio,
+            @RequestParam(required = false) Double precioM, ModelMap modelo) {
+
+        List<Inmueble> inmuebles = inmuebleServicio.listarXPVenta(tipo, ambientes, precio, precioM);
 
         modelo.addAttribute("inmuebles", inmuebles);
 
         return "inmuebleList.html";
     }
 
-    @GetMapping("/compras/{idUsuario}")
-    public String listaCompra(ModelMap modelo, @PathVariable String idUsuario){
-        List<Inmueble> inmuebles = inmuebleServicio.listarInmuebleCliente(idUsuario);
-        modelo.addAttribute("inmuebles", inmuebles);
-        return "/inmuebleListCliente";
-    }
-    
-    @GetMapping("/modifica/{id}")
-    public String modificaInmueble(HttpSession session, @PathVariable String id, ModelMap modelo) {
+    @GetMapping("/lista/ventasPorPrecio") //localhost:8080/inmueble/lista/
+    public String listarbusquedaVentaXP(ModelMap modelo) {
 
-        modelo.put("inmueble", inmuebleServicio.getOne(id));
         modelo.addAttribute("tipos", Tipo.values());
 
-        return "modificainmueble.html";
+        return "ventasPorPrecio.html";
     }
 
-    @PostMapping("/modifica/{id}")
-    public String modificaInmueble(HttpSession session, @PathVariable String id, @RequestParam Tipo tipo, @RequestParam String ubicacion, @RequestParam(required = false) Double superficie, @RequestParam(required = false) Integer ambientes,
-            @RequestParam String descripcion, @RequestParam(required = false) Double precio, @RequestParam(required = false) String tipoOferta, ModelMap modelo) {
+    @PostMapping("/lista/ventasPorPrecio") //localhost:8080/inmueble/lista/
+    public String busquedaVentaXP(@RequestParam Tipo tipo,
+            @RequestParam(required = false) Integer ambientes, ModelMap modelo) {
 
-        try {
-            if (tipoOferta.equals("venta")) {
-                Double precioVenta = precio;
-                Double precioAlquiler = null;
-                inmuebleServicio.modificarInmueble(id, tipo, ubicacion, superficie, ambientes, descripcion, precioVenta, precioAlquiler, tipoOferta);
-            } else if (tipoOferta.equals("alquiler")) {
-                Double precioAlquiler = precio;
-                Double precioVenta = null;
-                inmuebleServicio.modificarInmueble(id, tipo, ubicacion, superficie, ambientes, descripcion, precioVenta, precioAlquiler, tipoOferta);
-            }
-            modelo.put("exito", "inmueble modificado con exito");
+        List<Inmueble> inmuebles = inmuebleServicio.listarBusquedaVenta(tipo, ambientes);
 
-            return "redirect:/";
+        modelo.addAttribute("inmuebles", inmuebles);
 
-        } catch (MyException ex) {
-            modelo.put("error", ex.getMessage());
-            modelo.addAttribute("tipos", Tipo.values());
-
-            return "redirect:/";
-        }
-
+        return "inmuebleList.html";
     }
 
-    @GetMapping("/elimina/{id}")
-    public String elimina(@PathVariable String id, ModelMap modelo) {
+    @GetMapping("/lista/busquedaAlquiler") //localhost:8080/inmueble/lista/
+    public String listarbusquedaAlquiler(ModelMap modelo) {
 
-        try {
-            inmuebleServicio.borrarInmueble(id);
-            return "redirect:/"; // Redirige a la lista después de eliminar
-        } catch (MyException ex) {
-            modelo.put("error", ex.getMessage());
-            return "redirect:/"; // Redirige a la lista
-        }
+        modelo.addAttribute("tipos", Tipo.values());
+
+        return "busquedaA.html";
+    }
+
+    @PostMapping("/lista/busquedaAlquiler") //localhost:8080/inmueble/lista/
+    public String busquedaAlquiler(@RequestParam Tipo tipo, @RequestParam(required = false) Double superficie,
+            @RequestParam(required = false) Integer ambientes,
+            @RequestParam(required = false) Double precio,
+            @RequestParam(required = false) Double precioM,
+            ModelMap modelo) {
+
+        List<Inmueble> inmuebles = inmuebleServicio.listarXPAlquiler(tipo, ambientes, precio, precioM);
+
+        modelo.addAttribute("inmuebles", inmuebles);
+
+        return "inmuebleList.html";
+    }
+
+    @GetMapping("/lista/alquilerPorPrecio") //localhost:8080/inmueble/lista/
+    public String listarAlquilerXP(ModelMap modelo) {
+
+        modelo.addAttribute("tipos", Tipo.values());
+
+        return "alquilerPorPrecio.html";
+    }
+
+    @PostMapping("/lista/alquilerPorPrecio") //localhost:8080/inmueble/lista/
+    public String busquedaAlquilerXP(@RequestParam Tipo tipo,
+            @RequestParam(required = false) Integer ambientes,
+            ModelMap modelo) {
+
+        List<Inmueble> inmuebles = inmuebleServicio.listarBusquedaAlquiler(tipo, ambientes);
+
+        modelo.addAttribute("inmuebles", inmuebles);
+
+        return "inmuebleList.html";
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ENTE', 'ROLE_CLIENTE')")
+    @GetMapping("/listar/{id}")
+    public String listarGeneral(HttpSession session, ModelMap modelo, @PathVariable String id) {
+
+        List<Inmueble> inmuebles = inmuebleServicio.listarInmueblePropietarioYInquilino(id);
+
+        modelo.addAttribute("inmuebles", inmuebles);
+
+        return "inmuebleList.html";
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -255,7 +288,7 @@ public class InmuebleControlador {
             }
             modelo.put("exito", "inmueble creado con exito");
 
-            return "redirect:../listaGeneral";
+            return "redirect:/";
 
         } catch (MyException ex) {
             modelo.put("error", ex.getMessage());
@@ -271,10 +304,10 @@ public class InmuebleControlador {
 
         try {
             inmuebleServicio.borrarInmueble(id);
-            return "redirect:../listaGeneral"; // Redirige a la lista después de eliminar
+            return "redirect:/"; // Redirige a la lista después de eliminar
         } catch (MyException ex) {
             modelo.put("error", ex.getMessage());
-            return "redirect:/listaGeneral"; // Redirige a la lista
+            return "redirect:/"; // Redirige a la lista
         }
     }
 

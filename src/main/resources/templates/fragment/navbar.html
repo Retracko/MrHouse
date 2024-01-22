@@ -36,7 +36,23 @@
                         <li><a class="dropdown-item" th:href="@{/inmueble/lista/localVenta}">Local</a></li>
                         <li><a class="dropdown-item" th:href="@{/inmueble/lista/loteVenta}">Lote</a></li>
                     </ul>
-                </li>        
+                </li>     
+                
+                 <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Buscar
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" th:href="@{/inmueble/lista/busquedaVenta}">Venta</a></li>
+                        <li><a class="dropdown-item" th:href="@{/inmueble/lista/busquedaAlquiler}">Alquiler</a></li>
+                         <li><a class="dropdown-item" th:href="@{/inmueble/lista/ventasPorPrecio}">Venta (por orden de precios)</a></li>
+                        <li><a class="dropdown-item" th:href="@{/inmueble/lista/alquilerPorPrecio}">Alquiler (por orden de precios)</a></li>
+                      
+                        
+                    </ul>
+                </li>   
+                
+                
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/contactanos}">Contactanos</a>
                 </li>
@@ -49,12 +65,12 @@
                     <a class="nav-link dropdown-toggle" th:if="${session.usuariosession != null}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Perfil
                     </a>
-                    <ul class="dropdown-menu">                        
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE') or hasRole ('ADMIN')" th:href="@{/usuario/perfil/__${session.usuariosession.id}__}">Ver Perfil</a></li>                  
                         <li><a class="dropdown-item" sec:authorize="hasRole ('ADMIN')" th:href="@{/admin/dashboard}">Panel Admin</a></li>
                         <li><a class="dropdown-item" sec:authorize="hasRole ('ADMIN')" th:href="@{/inmueble/crear}">Ofrecer propiedad</a></li>
                         <li><a class="dropdown-item" sec:authorize="hasRole ('ENTE')" th:href="@{/inmueble/crear}">Ofrecer propiedad</a></li>
-                        <li><a class="dropdown-item" sec:authorize="hasRole ('ENTE')" th:href="@{/inmueble/listar/__${session.usuariosession.id}__}">Ver mis ropiedades</a></li>
-<!--                        <li><a class="dropdown-item" sec:authorize="hasRole ('CLIENTE')" th:href="@{/inmueble/listar/__${session.usuariosession.id}__}">Ver mis ropiedades</a></li>-->
+                        <li><a class="dropdown-item" sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:href="@{/inmueble/listar/__${session.usuariosession.id}__}">Mis propiedades</a></li>
                         <li><a class="dropdown-item" sec:authorize="hasRole ('CLIENTE')" th:href="@{/oferta/cliente/__${session.usuariosession.id}__}">Mis Ofertas</a></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Cerrar Sesión</a></li>
                     </ul>

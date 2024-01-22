@@ -17,9 +17,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
-/**
- * @author Gimenez Victor
- */
 @Entity
 public class Usuario {
 
@@ -47,7 +44,7 @@ public class Usuario {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioCliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Oferta> ofertas;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuarioEnte", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Inmueble> inmuebles;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "inmueble", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comentario> comentarios;

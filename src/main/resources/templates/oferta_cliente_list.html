@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>MrHouse</title>
+        <title>Ofertar</title>
         <link rel="stylesheet" href="./css/main.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,18 +19,18 @@
                 <thead class="align-items-center">
                     <tr >
                         <th scope="col">Id del oferta</th>
-                        <th scope="col">Tipo de Inmueble</th>       
+                        <th scope="col">Tipo de Inmueble</th>
+                        <th scope="col">Operación</th>
                         <th scope="col">Ubicación</th>     
                         <th scope="col">Monto</th>
                         <th scope="col">Estado</th>
-                        <th scope="col">Confirmar</th>
-                        <th scope="col">Cancelar</th>
                     </tr>
                 </thead>
                 <tbody th:each="oferta : ${ofertas}"> 
                     <tr>
                         <th scope="row" th:text="${oferta.id}"></th>
                         <td th:text="${oferta.inmueble.tipo}"></td>
+                        <td th:text="${oferta.inmueble.tipoOferta}"></td>
                         <td th:text="${oferta.inmueble.ubicacion}"></td>
                         <td th:text="${oferta.montoOferta}"></td>
                         <td th:text="${oferta.estadoOferta}"> </td>
@@ -51,6 +51,10 @@
                                 <a th:href="@{/oferta/descartar/__${oferta.id}__}" class="nav-link px-2">
                                     <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Cancelar</font></font></a>
                             </button>
+                            <button th:if="${oferta.estadoOferta} == 'CONFIRMADA' and ${oferta.tipoOferta} == 'alquiler'" type="button" class="btn btn-outline-primary me-2 custom-button">
+                                    <a th:href="@{/oferta/cancelar/__${oferta.id}__}" class="nav-link px-2">
+                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Cancelar Alquiler</font></font></a>
+                                </button>
                         </td>
 
                     </tr>

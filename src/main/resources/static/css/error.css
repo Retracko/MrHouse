@@ -1,0 +1,28 @@
+main {
+    height: 100vh;
+}
+
+.contenedorMain {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#span-mh{
+    font-size: 10em;
+}
+
+.contenedorError {
+    font-size: 2em;
+}
+
+.errorCodigo {
+    font-size: 2.5em;
+    font-weight: 700;
+}
+
+.contenedorSesion {
+    font-size: 1.5em;
+}

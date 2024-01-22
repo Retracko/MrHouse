@@ -1,9 +1,7 @@
 package Uegg.appInmobiliaria.controladores;
 
 import Uegg.appInmobiliaria.entidades.Usuario;
-import Uegg.appInmobiliaria.servicios.UsuarioServicio;
 import javax.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/")
 public class PortalControlador {
-
-    @Autowired
-    private UsuarioServicio usuarioServicio;
 
     @GetMapping("/")
     public String index() {
@@ -33,12 +28,17 @@ public class PortalControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_CLIENTE', 'ROLE_ENTE', 'ROLE_ADMIN')")
     @GetMapping("/inicio")
-    public String inicio(HttpSession session) {
+    public String inicio(HttpSession session, ModelMap modelo) {
         Usuario logueado = (Usuario) session.getAttribute("usuariosession");
-        if (logueado.getRol().toString().equals("ADMIN")) {
+        if (logueado.getActivo() != true) {
+            session.invalidate();
+            modelo.put("error", "Este usuario ha sido dado de baja!");
+            return "login.html";
+        } else if (logueado.getRol().toString().equals("ADMIN")) {
             return "redirect:/admin/dashboard";
+        } else {
+            return "index.html";
         }
-        return "index.html";
     }
 
     @GetMapping("/contactanos")

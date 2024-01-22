@@ -1,10 +1,12 @@
 package Uegg.appInmobiliaria.servicios;
 
 import Uegg.appInmobiliaria.entidades.Imagen;
+import Uegg.appInmobiliaria.entidades.Inmueble;
 import Uegg.appInmobiliaria.entidades.Usuario;
 import Uegg.appInmobiliaria.enums.Rol;
 import Uegg.appInmobiliaria.excepciones.MyException;
 import Uegg.appInmobiliaria.repositorios.ImagenRepositorio;
+import Uegg.appInmobiliaria.repositorios.InmuebleRepositorio;
 import Uegg.appInmobiliaria.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,7 +39,9 @@ public class UsuarioServicio implements UserDetailsService {
     @Autowired
     private ImagenServicio imagenServicio;
     @Autowired
-    ImagenRepositorio imagenRepositorio;
+    private InmuebleServicio inmuebleServicio;
+    @Autowired
+    private InmuebleRepositorio inmuebleRepositorio;
 
     @Transactional
     public void crearCliente(MultipartFile archivo, String denominacion, Long dni, String direccion, Integer codigoPostal, Long telefono,
@@ -76,7 +80,7 @@ public class UsuarioServicio implements UserDetailsService {
         validarEnte(denominacion, cuit, direccion, codigoPostal, telefono, email, pass, pass2);
 
         Usuario usuario = new Usuario();
-        
+
         if (archivo.isEmpty()) {
             System.out.println("null : " + archivo);
             Imagen imagen = null;
@@ -108,7 +112,7 @@ public class UsuarioServicio implements UserDetailsService {
             Integer codigoPostal,
             String email,
             String pass,
-            String pass2) {
+            String pass2) throws MyException {
         Optional<Usuario> respuesta = usuarioRepo.findById(id);
         if (respuesta.isPresent()) {
             // Obtener la instancia existente
@@ -116,7 +120,11 @@ public class UsuarioServicio implements UserDetailsService {
             usuario.setTelefono(telefono);
             usuario.setDireccion(direccion);
             usuario.setCodigoPostal(codigoPostal);
-
+            if (pass.equals(pass2)){
+                usuario.setPass(new BCryptPasswordEncoder().encode(pass));
+            } else {
+                throw new MyException("Las contraseñas no coinciden");
+            }
             usuarioRepo.save(usuario);
         }
     }
@@ -163,6 +171,14 @@ public class UsuarioServicio implements UserDetailsService {
     public void baja(String id) {
         Optional<Usuario> respuesta = usuarioRepo.findById(id);
         if (respuesta.isPresent()) {
+            //Va a verificar si el usuario tenia inmuebles y tambien les va a dar el alta. 
+            List<Inmueble> inmuebles = inmuebleRepositorio.buscarPorProp(id);
+            if (inmuebles != null) {
+                for (Inmueble inmueble : inmuebles) {
+                    inmuebleServicio.NoDisponible(inmueble.getId());
+                }
+            }
+
             Usuario usuario = respuesta.get();
             usuario.setActivo(false);
             usuarioRepo.save(usuario);
@@ -173,6 +189,14 @@ public class UsuarioServicio implements UserDetailsService {
     public void alta(String id) {
         Optional<Usuario> respuesta = usuarioRepo.findById(id);
         if (respuesta.isPresent()) {
+
+            //Va a verificar si el usuario tenia inmuebles y tambien les va a dar el alta. 
+            List<Inmueble> inmuebles = inmuebleRepositorio.buscarPorProp(id);
+            if (inmuebles != null) {
+                for (Inmueble inmueble : inmuebles) {
+                    inmuebleServicio.Disponible(inmueble.getId());
+                }
+            }
             // Obtener la instancia existente
             Usuario usuario = respuesta.get();
             usuario.setActivo(true);
@@ -219,7 +243,7 @@ public class UsuarioServicio implements UserDetailsService {
         }
 
         if (!pass.equals(pass2)) {
-            throw new MyException("Las contraseñas deben ser iguales.");
+            throw new MyException("Las contraseñas no coinciden.");
         }
 
     }
@@ -263,7 +287,7 @@ public class UsuarioServicio implements UserDetailsService {
         }
 
         if (!pass.equals(pass2)) {
-            throw new MyException("Las contraseñas deben ser iguales");
+            throw new MyException("Las contraseñas no coinciden");
         }
     }
 

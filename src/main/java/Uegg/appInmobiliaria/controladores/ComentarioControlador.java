@@ -5,7 +5,6 @@ import Uegg.appInmobiliaria.entidades.Usuario;
 import Uegg.appInmobiliaria.repositorios.ComentarioRepositorio;
 import Uegg.appInmobiliaria.servicios.ComentarioServicio;
 import java.util.List;
-import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * @author Gimenez Victor
- */
 @Controller
 @RequestMapping("/comentario")
 public class ComentarioControlador {

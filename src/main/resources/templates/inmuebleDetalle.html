@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>MrHouse</title>
+        <title>MrHouse - Inmueble </title>
         <link rel="stylesheet" href="./css/main.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,11 +21,11 @@
                     <div class="columna-1">
                         <div class="fila-1">
                             <img id="imagenGrande" th:src="@{/imagen/inmueble/__${inmueble.imagenes[0].id}__}" alt="">
-                            <div sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioEnte.id == session.usuariosession.id}" class="editImagenes">
+                            <div sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioPropietario.id == session.usuariosession.id}" class="editImagenes">
                                 <a th:href="@{/inmueble/listarimagenes/__${inmueble.id}__}">
                                     <img src="https://cdn.icon-icons.com/icons2/2650/PNG/512/edit_object_icon_160911.png">
                                 </a>
-                                
+
                             </div>
                         </div>
                         <div class="fila-2">
@@ -60,24 +60,72 @@
                                 <div class="col-2">
                                     <a sec:authorize="hasRole ('ADMIN')" th:href="@{/inmueble/modificar/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Modificar</a> 
                                     <a sec:authorize="hasRole ('ADMIN')" th:href="@{/inmueble/eliminar/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Eliminar</a>
-                                    <a th:if="${!(#authorization.expression('isAuthenticated()') and inmueble.usuarioEnte.id == session?.usuariosession?.id)}" th:href="@{/oferta/crear/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Hacer Oferta</a>
-                                    <a sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioEnte.id == session.usuariosession.id}" th:href="@{/inmueble/modifica/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Modificar</a> 
-                                    <a sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioEnte.id == session.usuariosession.id}" th:href="@{/inmueble/elimina/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Eliminar</a>
+                                    <a sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioPropietario.id == session.usuariosession.id}" th:href="@{/inmueble/modificar/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Modificar</a> 
+                                    <a sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${inmueble.usuarioPropietario.id == session.usuariosession.id}" th:href="@{/inmueble/eliminar/__${inmueble.id}__}" class="btn btn-sm btn-outline-secondary">Eliminar</a>
+                                    
+                                    <div sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${!(inmueble.usuarioPropietario.id == session.usuariosession.id)}">
+                                        <button th:if="${inmueble.usuarioPropietario.id != session.usuariosession.id}"
+                                             type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="background: #168AAD;">
+                                        Hacer oferta
+                                        </button>
+                                    </div>
+                                    
+
+                                    <!-- Modal -->
+                                    <div sec:authorize="hasRole ('ENTE') or hasRole ('CLIENTE')" th:if="${!(inmueble.usuarioPropietario.id == session.usuariosession.id)}"  class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Haz tu oferta aqui.</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="/oferta/enviar" method="POST">
+                                                        <div class="form-col2">
+                                                            <input hidden th:value="${inmueble.id}" name="idInmueble" id="idInmueble">
+                                                        </div>
+                                                        
+                                                        <div class="form-col2">
+                                                            <input hidden th:value="${inmueble.tipoOferta}" name="tipoOferta" id="idInmueble">
+                                                        </div>
+
+                                                        <div class="form-col2">
+                                                            <input hidden th:value="${session.usuariosession.id}"  name= "idCliente" id="idCliente">
+                                                        </div>
+
+                                                        <div class="form-col2">
+                                                            <label for="montoOferta" class="form-label">MONTO OFERTA: <input type="number"  class="form-control" th:value="${montoOferta}" name= "montoOferta" id="montoOferta"/></label>
+                                                        </div>
+
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="buttonC">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" id="buttonE" style="background: #168AAD;">Enviar oferta</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Fin Modal -->
                                 </div>
-                                </div>
+                            </div>
                         </div>
 
                     </div>
                     <div class="columna-2">
+
                         <div class="fila-1">
                             <form id="form">
-                                <input type="hidden" id="email_to" name="email_to" th:value="${inmueble.usuarioEnte.email}">
+                                <input type="hidden" id="email_to" name="email_to" th:value="${inmueble.usuarioPropietario.email}">
                                 <input type="hidden" id="oferta" name="oferta" th:value="${inmueble.tipoOferta}">
                                 <input type="hidden" id="id_inmueble" name="id_inmueble" th:value="${inmueble.id}">
                                 <input type="hidden" id="tipo" name="tipo" th:value="${inmueble.tipo}">
                                 <input type="hidden" id="ubicacion" name="ubicacion" th:value="${inmueble.ubicacion}">
-
-                                <label for="nombre">Nombre:</label>
+                                <div class="titulo-form">
+                                    <p>
+                                        <span>No</span> te quedes con las <span>dudas</span>, contacta al <span>propietario</span>!
+                                    </p>
+                                    
+                                </div>
+                                <label for="nombre">Nombre Completo:</label>
                                 <input type="text" id="name" name="name" required>
 
                                 <br>
@@ -101,23 +149,12 @@
 
                             </form>
                         </div>
-                        <div class="fila-2">
-                            <div class="calendario">
-                                calendario
-                            </div>
+                        <div th:if="${session.usuariosession == null}" class="fila-2">
+                            <p>¿Querés hacer una oferta?</p>
+                             <p>Registrate como <a th:href="@{/usuario/crearCliente}">Cliente</a> o <a th:href="@{/usuario/crearEnte}">Ente</a>.</p> 
                         </div>
-
                     </div>
-
                 </div>
-                <div class="fila-general-2">
-                    <div class="columna-1">
-                        Comentarios
-                    </div>
-                </div>      
-
-
-
             </div>   
 
         </main>

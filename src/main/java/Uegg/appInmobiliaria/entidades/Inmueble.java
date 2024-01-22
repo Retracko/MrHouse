@@ -42,8 +42,12 @@ public class Inmueble {
     private List<Imagen> imagenes;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ente_id")
-    private Usuario usuarioEnte;
+    @JoinColumn(name = "propietario_id")
+    private Usuario usuarioPropietario;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "inquilino_id")
+    private Usuario usuarioInquilino;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "inmueble", cascade = CascadeType.ALL)
     private List<Oferta> ofertas;
@@ -145,12 +149,20 @@ public class Inmueble {
         this.imagenes = imagenes;
     }
 
-    public Usuario getUsuarioEnte() {
-        return usuarioEnte;
+    public Usuario getUsuarioPropietario() {
+        return usuarioPropietario;
     }
 
-    public void setUsuarioEnte(Usuario usuarioEnte) {
-        this.usuarioEnte = usuarioEnte;
+    public void setUsuarioPropietario(Usuario usuarioPropietario) {
+        this.usuarioPropietario = usuarioPropietario;
+    }
+
+    public Usuario getUsuarioInquilino() {
+        return usuarioInquilino;
+    }
+
+    public void setUsuarioInquilino(Usuario usuarioInquilino) {
+        this.usuarioInquilino = usuarioInquilino;
     }
 
     public List<Oferta> getOfertas() {

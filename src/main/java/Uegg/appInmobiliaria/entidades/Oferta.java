@@ -21,6 +21,7 @@ public class Oferta {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     private Double montoOferta;
+    private String tipoOferta;
 
     @ManyToOne
     @JoinColumn(name = "inmueble_id")
@@ -54,6 +55,14 @@ public class Oferta {
         this.montoOferta = montoOferta;
     }
 
+    public String getTipoOferta() {
+        return tipoOferta;
+    }
+
+    public void setTipoOferta(String tipoOferta) {
+        this.tipoOferta = tipoOferta;
+    }
+    
     public Inmueble getInmueble() {
         return inmueble;
     }

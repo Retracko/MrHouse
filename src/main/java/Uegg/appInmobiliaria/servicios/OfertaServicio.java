@@ -14,9 +14,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * @author Gimenez Victor
- */
 @Service
 public class OfertaServicio {
 
@@ -30,24 +27,24 @@ public class OfertaServicio {
     private InmuebleServicio inmuebleServicio;
 
     @Transactional
-    public void crearOfertaCliente(Double monto, String idInmueble, String idCliente) throws MyException {
+    public void crearOfertaCliente(Double monto, String tipoOferta, String idInmueble, String idCliente) throws MyException {
         validar(monto);
         Inmueble inmueble = inmuebleRepositorio.getOne(idInmueble);
         Usuario usuario = usuarioRepositorio.getOne(idCliente);
         Oferta oferta = new Oferta();
         oferta.setUsuarioCliente(usuario);
         oferta.setMontoOferta(monto);
+        oferta.setTipoOferta(tipoOferta);
         oferta.setInmueble(inmueble);
         oferta.setFechaOferta(new Date());
         oferta.setEstadoOferta("PENDIENTE");
         oferta.setVigente(true);
         ofertaRepositorio.save(oferta);
     }
-    
+
     @Transactional
-    public void eliminarOferta (String id) {
+    public void eliminarOferta(String id) {
         Oferta oferta = ofertaRepositorio.getOne(id);
-        
         ofertaRepositorio.delete(oferta);
     }
 
@@ -63,42 +60,57 @@ public class OfertaServicio {
         rechazarOfertas(inmueble.getId());
     }
 
+    //CANCELACION
     @Transactional
-    public void confirmarOferta(String id){
+    public void cancelarOferta(String id) {
         Oferta oferta = ofertaRepositorio.getOne(id);
-        if(oferta.getEstadoOferta().equalsIgnoreCase("ACEPTADA")){
+        oferta.setEstadoOferta("CANCELACION");
+        ofertaRepositorio.save(oferta);
+
+    }
+
+    @Transactional
+    public void confirmarOferta(String id) {
+        Oferta oferta = ofertaRepositorio.getOne(id);
+        Inmueble inmueble = oferta.getInmueble();
+        if (oferta.getEstadoOferta().equalsIgnoreCase("ACEPTADA")) {
+            if (oferta.getTipoOferta().equalsIgnoreCase("VENTA")) {
+                inmueble.setUsuarioPropietario(oferta.getUsuarioCliente());
+                inmuebleRepositorio.save(inmueble);
+            } else {
+                inmueble.setUsuarioInquilino(oferta.getUsuarioCliente());
+                inmuebleRepositorio.save(inmueble);
+            }
             oferta.setEstadoOferta("CONFIRMADA");
+            ofertaRepositorio.save(oferta);
+        } else if (oferta.getEstadoOferta().equalsIgnoreCase("CANCELACION")) {
+            oferta.setEstadoOferta("CANCELADA");
+            oferta.setVigente(false);
+            inmueble.setUsuarioInquilino(null);
+            inmueble.setDisponibildad(true);
+            inmuebleRepositorio.save(inmueble);
             ofertaRepositorio.save(oferta);
         }
     }
-    
+
     @Transactional
-    public void descartarOferta(String id){
+    public void descartarOferta(String id) {
         Oferta oferta = ofertaRepositorio.getOne(id);
-        if(oferta.getEstadoOferta().equalsIgnoreCase("ACEPTADA")){
+        if (oferta.getEstadoOferta().equalsIgnoreCase("ACEPTADA")) {
+            Inmueble inmueble = oferta.getInmueble();
+            inmueble.setDisponibildad(Boolean.TRUE);
+            inmuebleRepositorio.save(inmueble);
+
             oferta.setEstadoOferta("DESCARTADA");
             ofertaRepositorio.save(oferta);
         }
     }
-    //Falta descantar inmueble del ente
+
     @Transactional
-    public void transaccionCompra(String idOferta){
-        Optional<Oferta> respuesta = ofertaRepositorio.findById(idOferta);
-        if(respuesta.isPresent()){
-            Oferta oferta = new Oferta();
-            oferta.setEstadoOferta("CONFIRMADA");
-            Usuario usuario = usuarioRepositorio.getOne(oferta.getUsuarioCliente().getId());
-            Usuario usuarioEnte = usuarioRepositorio.getOne(oferta.getInmueble().getUsuarioEnte().getId());
-            usuario.getInmuebles().add(oferta.getInmueble());
-            
-        }
-    }
-    
-    @Transactional
-    public void rechazarOferta(String idOferta) {
-        Optional<Oferta> respuesta = ofertaRepositorio.findById(idOferta);
+    public void rechazarOferta(String id) {
+        Optional<Oferta> respuesta = ofertaRepositorio.findById(id);
         if (respuesta.isPresent()) {
-            Oferta oferta = new Oferta();
+            Oferta oferta = respuesta.get();
             oferta.setEstadoOferta("RECHAZADA");
             oferta.setVigente(false);
             ofertaRepositorio.save(oferta);
@@ -117,22 +129,18 @@ public class OfertaServicio {
         }
     }
 
-    
     public List<Oferta> listarOfertaCliente(String id) {
         return ofertaRepositorio.buscarPorCliente(id);
     }
 
-    
     public List<Oferta> listarOfertasInmueble(String id) {
         return ofertaRepositorio.buscarPorInmueble(id);
     }
 
-    
     public Oferta mejorOferta(String id) {
         return ofertaRepositorio.buscarOfertaMayor(id);
     }
 
-    
     public Oferta contarOfertas(String id) {
         return ofertaRepositorio.contarOfertasPorInmueble(id);
     }
@@ -143,7 +151,7 @@ public class OfertaServicio {
 
     public void validar(Double montoOferta) throws MyException {
         if (montoOferta <= 0 || montoOferta == null) {
-            throw new MyException("La oferta no puede ser vacia o  se rmenor a cero.");
+            throw new MyException("La oferta no puede ser vacia o  ser menor a cero.");
         }
     }
 }

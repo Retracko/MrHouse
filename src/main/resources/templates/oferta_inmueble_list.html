@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>MrHouse</title>
+        <title>Ofertas</title>
         <link rel="stylesheet" href="./css/main.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,41 +14,91 @@
         <nav th:replace="./fragment/navbar :: nav"></nav>
         <main>
             <div class="container m-5" >
-                <div>
-                    <table  class="table table-white">
-                        <thead class="align-items-center">
-                            <tr>
-                                <th  scope="col">Nombre Cliente</th>
-                                <th  scope="col">Monto Ofrecido</th>
-                                <th  scope="col">Aceptar / Rechazar</th>
-                            </tr>
-                        </thead>
-                        <tbody th:each="oferta : ${oferta}">
-                            <tr>
-                                <th scope="row">Nombre Cliente</th>
-                                <td>Monto Ofrecido</td>
-                                <td >
-                                    <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/aceptar/__${oferta.id}__}" class="btn custom-button my-2"> <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Aceptar</font></font></a></button>
-                                    <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/rechazar/__${oferta.id}__}" class="btn custom-button my-2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Rechazar</font></font></a></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+
                 <table class="table table-white">
+                    <thead class="align-items-center">
+                        <tr >
+                            <th scope="col">Id del oferta</th>
+                            <th scope="col">Tipo de Inmueble</th>
+                            <th scope="col">Operación</th>     
+                            <th scope="col">Ubicación</th>     
+                            <th scope="col">Monto</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
                     <tbody th:each="oferta : ${ofertas}"> 
                         <tr>
                             <th scope="row" th:text="${oferta.id}"></th>
+                            <td th:text="${oferta.inmueble.tipo}"></td>
+                            <td th:text="${oferta.inmueble.tipoOferta}"></td>
+                            <td th:text="${oferta.inmueble.ubicacion}"></td>
                             <td th:text="${oferta.montoOferta}"></td>
-                            <td></td>
-                            <td th:text="${oferta.estadoOferta}"></td>
+                            <td th:text="${oferta.estadoOferta}"> </td>
+
                             <td >
-                                <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/aceptar/__${oferta.id}__}" class="btn custom-button my-2 btn btn-secondary"> Aceptar</a></button>
-                                <button type="button"class="btn custom-button my-2"><a th:href="@{/oferta/rechazar/__${oferta.id}__}" class="btn custom-button my-2 btn btn-secondary">Rechazar</a></button>
+                                <button th:if="${oferta.estadoOferta} == 'PENDIENTE'" type="button" class="btn btn-outline-primary me-2 custom-button">
+                                    <a th:href="@{/oferta/aceptar/__${oferta.id}__}" class="nav-link px-2">
+                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Aceptar</font></font>
+                                    </a>
+                                </button>
                             </td>
+                            <td>
+                                <button th:if="${oferta.estadoOferta} == 'PENDIENTE'" type="button" class="btn btn-outline-primary me-2 custom-button">
+                                    <a th:href="@{/oferta/rechazar/__${oferta.id}__}" class="nav-link px-2">
+                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Rechazar</font></font></a>
+                                </button>
+                                <button th:if="${oferta.estadoOferta} == 'CANCELACION' and ${oferta.tipoOferta} == 'alquiler' " type="button" class="btn btn-outline-primary me-2 custom-button">
+                                    <a th:href="@{/oferta/confirmar/__${oferta.id}__}" class="nav-link px-2">
+                                        <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Confirmar Cancelación</font></font></a>
+                                </button>
+                            </td>
+
                         </tr>
+
                     </tbody>
                 </table>
+
+
+                <!--
+                <div>
+                      <table  class="table table-white">
+                          <thead class="align-items-center">
+                              <tr>
+                                  <th  scope="col">Nombre Cliente</th>
+                                  <th  scope="col">Monto Ofrecido</th>
+                                  <th  scope="col">Aceptar / Rechazar</th>
+                              </tr>
+                          </thead>
+                          <tbody th:each="oferta : ${oferta}">
+                              <tr>
+                                  <th scope="row">Nombre Cliente</th>
+                                  <td>Monto Ofrecido</td>
+                                  <td >
+                                      <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/aceptar/__${oferta.id}__}" class="btn custom-button my-2"> <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Aceptar</font></font></a></button>
+                                      <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/rechazar/__${oferta.id}__}" class="btn custom-button my-2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Rechazar</font></font></a></button>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                <table class="table table-white">
+                      <tbody th:each="oferta : ${ofertas}"> 
+                          <tr>
+                              <th scope="row" th:text="${oferta.id}"></th>
+                              <td th:text="${oferta.montoOferta}"></td>
+                              <td></td>
+                              <td th:text="${oferta.estadoOferta}"></td>
+                              <td >
+                                  <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/aceptar/__${oferta.id}__}" class="btn custom-button my-2"> <font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Aceptar</font></font></a></button>
+                                  <button type="button" class="btn custom-button my-2"><a th:href="@{/oferta/rechazar/__${oferta.id}__}" class="btn custom-button my-2"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Rechazar</font></font></a></button>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                -->
+
+
 
 
                 <div th:if="${exito}!=null" class="card text-white bg-success mb-3 mt-3 mensajeExito" >

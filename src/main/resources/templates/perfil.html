@@ -4,35 +4,58 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/perfil.css">
     <title>Mi Perfil</title>
 </head>
 <body>
-    <div class="container text-center perfil-container">
-        <div class="row">
-            <div class="col-md-4">
-                <img th:if="${session.usuariosession != null && session.usuariosession.imagen != null}" th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" alt="Foto de perfil" class="img-fluid rounded-circle perfil-img mb-4 mx-auto">
-            </div>
-            <div class="col-md-8 align-self-center">
-                <h1>Danna Martinez</h1>
-                <div class="row">
-                    <div class="col-md-6 tabla">
-                        <p><strong>DNI:</strong> 12345678A</p>
-                        <p><strong>Dirección:</strong> Dirección del usuario</p>
-                        <p><strong>Codigo Postal:</strong> codigo postal del usuario</p>
-                    </div>
-                    <div class="col-md-6 tabla">
-                        <p><strong>Teléfono:</strong> 123-456-789</p>
-                        <p><strong>Email:</strong> email del usuario</p>
-                        <p><strong>Pass:</strong> ••••••••</p> <!-- Usando el carácter de punto para representar la contraseña -->
-                    </div>
+    <nav th:replace="/fragment/navbar :: nav">  </nav>
+    <main>
+        <div class="container text-center perfil-container">
+            <div class="row">
+                <div class="col-md-4">
+                    <img th:if="${session.usuariosession != null && session.usuariosession.imagen != null}" th:src="@{/imagen/perfil/__${session.usuariosession.id}__}" alt="Foto de perfil" class="img-fluid rounded-circle perfil-img mb-4 mx-auto">
+                    <img th:if="${session.usuariosession != null && session.usuariosession.imagen == null}" src="/img/fotoP.jpeg" alt="Foto de perfil" class="img-fluid rounded-circle perfil-img mb-4 mx-auto">
                 </div>
-                <button type="button" class="btn botonM">Modificar</button>
-                <button type="button" class="btn botonE">Eliminar</button>
+                <div class="col-md-8 align-self-center">
+                    <h1 id="nombre" th:text="${usuario.denominacion}"></h1>
+                    <div class="row">
+                        <div class="col-md-6 tabla">
+                            <span th:if="${usuario.dni != null}"><strong>DNI: </strong></span>
+                            <p th:if="${usuario.dni != null}" th:text="'DNI: '+${usuario.dni}" style="display: inline;"></p>
+                            <span th:if="${usuario.cuit != null}"><strong>CUIT: </strong></span>
+                            <p th:if="${usuario.cuit != null}" th:text="${usuario.cuit}" style="display: inline;"></p>
+                            <br>
+                            <span><strong>Dirección:</strong></span>
+                            <p th:text="${usuario.direccion}" style="display: inline;"></p>
+                            <br>
+                            <span><strong>Codigo Postal:</strong></span>
+                            <p th:text="${usuario.codigoPostal}" style="display: inline;"></p>
+                        </div>
+                        <div class="col-md-6 tabla">
+                            <span><strong>Teléfono:</strong></span>
+                            <p th:text="${usuario.telefono}" style="display: inline;"></p>
+                            <br>
+                            <span><strong>Email:</strong></span>
+                            <p th:text="${usuario.email}" style="display: inline;"></p>
+                            <br>
+                            <span><strong>Contraseña:</strong></span>
+                            <p style="display: inline;">••••••••</p>
+                        </div>
+                    </div>
+                    <div class="btns-perfil">
+                        <button type="button" class="botonM"><a th:href="@{/usuario/modificar/__${session.usuariosession.id}__}">Modificar</a></button>
+                    </div>
+                    
+                </div>
             </div>
         </div>
-    </div>
-
+    </main>
+    
+<!--
     <div class="row mt-5">
         <div class="col-md-8 offset-md-2">
             <h2>Propiedades en Venta</h2>
@@ -42,9 +65,12 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
             
             </ul>
         </div>
-    </div>
+    </div>  
+-->
+    
 
-    <!-- Bootstrap JS y Popper.js (necesarios para algunos componentes de Bootstrap) -->
+    <footer th:replace="/fragment/footer :: footer">  </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
