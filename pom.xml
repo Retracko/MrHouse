@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>Uegg</groupId>
-    <artifactId>appInmobiliaria</artifactId>
+    <artifactId>MrHouse</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>appInmobiliaria</name>
+    <name>MrHouse</name>
     <description>Proyecto Final Grupo U</description>
     <properties>
         <java.version>1.8</java.version>
