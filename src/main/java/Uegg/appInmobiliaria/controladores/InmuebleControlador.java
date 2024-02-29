@@ -165,7 +165,7 @@ public class InmuebleControlador {
 
         modelo.addAttribute("tipos", Tipo.values());
 
-        return "busqueda.html";
+        return "busquedaVenta.html";
     }
 
     @PostMapping("/lista/busquedaVenta") //localhost:8080/inmueble/lista/
@@ -185,7 +185,7 @@ public class InmuebleControlador {
 
         modelo.addAttribute("tipos", Tipo.values());
 
-        return "ventasPorPrecio.html";
+        return "porOrdenPrecioVenta.html";
     }
 
     @PostMapping("/lista/ventasPorPrecio") //localhost:8080/inmueble/lista/
@@ -204,7 +204,7 @@ public class InmuebleControlador {
 
         modelo.addAttribute("tipos", Tipo.values());
 
-        return "busquedaA.html";
+        return "busquedaAlquiler.html";
     }
 
     @PostMapping("/lista/busquedaAlquiler") //localhost:8080/inmueble/lista/
@@ -226,7 +226,7 @@ public class InmuebleControlador {
 
         modelo.addAttribute("tipos", Tipo.values());
 
-        return "alquilerPorPrecio.html";
+        return "porOrdenPrecioAlquiler.html";
     }
 
     @PostMapping("/lista/alquilerPorPrecio") //localhost:8080/inmueble/lista/

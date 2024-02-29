@@ -18,7 +18,7 @@ body {
 }
 
 .contenedor {
-  height: 70%;
+  height: fit-content;
   box-sizing: border-box;
 }
 
@@ -35,6 +35,7 @@ body {
 }
 
 .formCrearInmueble {
+  height: 100vh;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -249,12 +250,13 @@ input[type="radio"]:checked {
 	font-weight: 900;
 }
 
-@media (max-width: 846px) {
+@media (max-width: 720px) {
   .fondo {
     height: fit-content;
   }
   .formCrearInmueble {
     flex-direction: column;
+    height: 80vh
   }
   .formCrearInmueble .col-2-general {
     backdrop-filter: blur(10px);
@@ -315,9 +317,44 @@ input[type="radio"]:checked {
   }
 }
 
+@media (min-height: 900px) and (max-width: 1100px)  {
+    .formCrearInmueble {
+    flex-direction: column;
+  }
+  .formCrearInmueble .col-2-general {
+    backdrop-filter: blur(10px);
+    width: 90%;
+    border-radius: 20px;
+    font-size: 2.5rem;
+  }
+  .form-col2{
+      height: 20%;
+      width: 80%;
+  }
+  
+  .form-row1,
+  .form-row5 {
+      height: 15%;
+  }
+  
+  .col-2-general input,
+  .col-2-general select {
+      height: 35%;
+      font-size: 2rem;
+  }
+  
+  .col-2-general button {
+      height: fit-content;
+      width: fit-content;
+      border-radius: 25px;
+      text-align: center;
+      
+  }
+}
+
 @media (min-height: 738px) {
   .contenedor {
-    height: 100vh;
+    height: fit-content;
   }
 
   /*faltan acomodar los inputs para cuando el height sea mayor a 738px*/

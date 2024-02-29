@@ -1,0 +1,116 @@
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    lang="en"
+    >
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Busqueda</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+            />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500&family=Montserrat&display=swap"
+            rel="stylesheet"
+            />
+        <link rel="stylesheet" href="/css/inmuebleForm.css" />
+    </head>
+
+    <body>
+        <nav th:replace="./fragment/navbar :: nav"></nav>
+
+        <div class="contenedor">
+            <form  class="formCrearInmueble fondo" 
+                   action="/inmueble/lista/busquedaVenta"
+                   method="POST" >
+
+                <div class="col-1-general"></div>
+                <div class="col-2-general">
+                    <div class="form-row1">
+                        <div class="form-col1">
+                            <label for="tipo" class="form-label">Tipo:</label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option
+                                    th:each="tipo : ${tipos}"
+                                    th:value="${tipo}"
+                                    th:text="${tipo}"
+                                    ></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-col2">
+                        <label for="ambientes" class="form-label">Ambientes:</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="ambientes"
+                            name="ambientes"
+                            placeholder="Cantidad de ambientes"
+                            />
+                    </div>
+
+                    <div class="form-col2">
+                        <label for="precio" class="form-label">Ingrese el Precio Mínimo:</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="precio"
+                            name="precioM"
+                            placeholder="Ingrese el precio"              
+                            />
+                    </div>
+
+                    <div class="form-col2">
+                        <label for="precio" class="form-label">Ingrese el Precio Máximo:</label>
+                        <input
+                            type="number"
+                            class="form-control"
+                            id="precio"
+                            name="precio"
+                            placeholder="Ingrese el precio"              
+                            />
+                    </div>
+
+                    <div class="form-row5">
+                        <button type="submit" class="button-79" role="button">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <div class="form-row">
+                        <div th:if="${error != null}" class="form-mensajeError">
+                            <div class="">
+                                <h5 class="">Error!</h5>
+                                <p class="text-validacion" th:text="${error}"></p>
+                            </div>
+                        </div>
+                        <div th:if="${exito != null}" class="form-mensajeExito">
+                            <div class="">
+                                <h5 class="">Exito!</h5>
+                                <p class="text-validacion" th:text="${exito}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <footer th:replace="./fragment/footer :: footer"></footer>
+
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
+
+
